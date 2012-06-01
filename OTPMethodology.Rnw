@@ -1,0 +1,89 @@
+\documentclass{article}
+\usepackage{fullpage}
+
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage[scaled=.50]{helvet}
+\renewcommand{\ttdefault}{pcr}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+ 
+\lstset{ %
+  language=Python,                % the language of the code
+  basicstyle=\small,           % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line 
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},      % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{blue},          % keyword style
+  commentstyle=\color{dkgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add a comment within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+% title
+\title{Batch Analysis of Bike Share Trip Data Using OpenTripPlanner}
+\author{James C. Wong\\ OpenPlans}
+
+% packages
+%\usepackage{fullpage}
+\usepackage{booktabs} % book style tables
+    
+% figures
+%SweaveOpts{fig.width=1, fig.height=1}
+
+% highlight
+\SweaveOpts{highlight=T} %color coding R code
+
+\begin{document}
+\SweaveOpts{concordance=TRUE} %dont worry about this
+\maketitle
+
+
+\section{Introduction}
+The OpenTripPlanner (OTP) Project is an open source collaboration led by OpenPlans to develop a multimodal trip planner for use by transit agencies, regional MPOs and other interested parties. As an open source project, the software is free to use and can be updated by anyone. OTP relies on two primary local data sources: a General Transit Feed Specification (GTFS) file and map data from Open Street Map (another open source project). While this tool has been developed primarily as a user-facing tool to assist travelers to use transit, it simultaneously provides a powerful analytic platform for planners.
+
+This exercise is a proof of concept to demonstrate the ability to generate alternative transit/walk/bike itineraries for a series of trips that have already occurred on a particular mode. The Capital Bikeshare (CaBi) system in the Washington region provides a robust dataset of origins, destinations, departure time and trip duration for every trip taken. Using a current (May 2012) GTFS feed for the Washington Metropolitan Area Transit Authority (WMATA) and a dataset from Q1 of the same year, we developed a series of scripts to quickly generate the alternative statistics. 
+
+The overall framework consists of a raw CaBi trip dataset, a python script which queries an instance of OTP and some basic R code to manipulate and present the data. The python script is the core feature of this documentation as it is the mechanism used to generate and record metrics from alternative itineraries from each origin-destination pair in the CaBi dataset. 
+
+\section{Methodology}
+
+%first option is the "name" of the R chunk. dont use . or _
+%knitr shows which chunk its working on to track processing delays
+%check - figure names may default with chunk name
+%cache results "magically" stores the output locally so it only runs if there's a change
+
+<<test, cache=T>>=
+# This is a comment
+(x <- c(1,2,3,4)) #parentheses mean output the defined variable
+fact <- function(n) {
+    if (n <= 1)
+        1
+    else
+        n * fact(n - 1)
+    } #find options to move tabs around
+
+message("Will the above blank line show up?")
+
+@
+Here is a break from the R code and then we'll jump right into using the Python code beneath it. Woo hoo! 
+
+\lstinputlisting[language=Python]{batch.py}
+
+\end{document}
