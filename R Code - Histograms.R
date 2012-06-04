@@ -1,3 +1,5 @@
+#NEW STUFF
+
 setwd("~/James Docs")
 wd <- getwd()
 list.files(wd)
@@ -14,18 +16,26 @@ View(subset(cabi,select=WalkTime:PlannedBikeDist))
 with(cabi,plot(CaBiTripTime,TransitTime))
 
 #Add Columns calculated from previous columns
+
+
 cabi = transform(cabi, TotalTransitTime = WalkTime+TransitTime+WaitingTime)
+cabi = transform(cabi, TotalTransitTime_mins = TotalTransitTime/60)
+cabi = transform(cabi, CaBiTime_mins=CaBiTripTime/60)
 cabi = transform(cabi, 
-                 CaBiTime_mins=CaBiTripTime/60, 
-                 TotalTransitTime_mins=TotalTransitTime/60, 
                  WalkTime_mins=WalkTime/60, 
                  TransitTime_mins=TransitTime/60,
                  WaitingTime_mins=WaitingTime/60,
                  PlannedBikeTime_mins=PlannedBikeTime/60, 
                  TotalTransitTripDist=TotalTransitTripDist/1609.344,
                  PlannedBikeDist=PlannedBikeDist/1609.344)
-cabi = transform(cabi, BikeTimeDiff_percent = (PlannedBikeTime_mins-CaBiTime_mins)/PlannedBikeTime_mins)
-cabi = transform(cabi, BikeTimeDiff_abs = (PlannedBikeTime_mins-CaBiTime_mins))
+                 
+cabi = transform(cabi,              
+                 CaBi_mph=PlannedBikeDist/(CaBiTime_mins/60),
+                 PlannedBike_mph=PlannedBikeDist/(PlannedBikeTime_mins/60))
+                 
+cabi = transform(cabi, 
+                 BikeTimeDiff_percent = (PlannedBikeTime_mins-CaBiTime_mins)/PlannedBikeTime_mins,
+                 BikeTimeDiff_abs = (PlannedBikeTime_mins-CaBiTime_mins))
 
 #View a subset of columns to store
 #is there a faster way to create a view/subset of specific columns?
@@ -43,7 +53,7 @@ hist(cabi$BikeTimeDiff_percent,
      col=rgb(100,100,100,75,maxColorValue=255))
 
 #A beautiful histogram
-hist(cabi$CaBiTime_mins,
+hist(cabi$PlannedBike_mph,
      breaks=500, 
      freq=TRUE,
      xlim=c(0,60),
@@ -59,24 +69,46 @@ axis(2,at=100*(0:20),tck=1,col="white",lwd=2,labels=FALSE)
 axis(1,at=10*(0:6), tck=1,col="white",lwd=5,labels=FALSE)
 axis(1,at=10*(0:6))
 
+#Another one
+hist(cabi$CaBi_mph,
+     breaks=25, 
+     freq=TRUE,
+     xlim=c(0,30),
+     xlab="Average CaBi Trip Speed (mph) \n Based on OTP planned distance",
+     main="Distributon of CaBi Speeds",
+     col=rgb(152,30,50,200,maxColorValue=255),
+     border=FALSE,
+     lab=c(5,10),
+     xaxt="n",
+     yaxt="n")
+axis(2,at=100*(0:20),las=2)
+axis(2,at=100*(0:20),tck=1,col="white",lwd=1,labels=FALSE)
+axis(1,at=5*(0:20), tck=1,col="white",lwd=1,labels=FALSE)
+axis(1,at=5*(0:20))
 
 #Practice scatterplot
 
 with(cabi,
      plot(
-       CaBiTime_mins,
+       TotalTransitTime_mins,
        PlannedBikeTime_mins,
        xlim=c(0,45),
        ylim=c(0,45),
-       ylab="CaBi Trip Time (min)",
        xlab="OTP Transit Time (min)",
-       main="CaBi Trip Time as a function of Predicted Bike Travel Time",
+       ylab="OTP Bike Time (min)",
+       main="Comparison of Expected Travel Time \n by Transit and Bicycle Modes",
        col=rgb(100,100,100,25,maxColorValue=255),
        pch=16,
        asp=1,
-       abline(a=0,b=1)
-     )
+       xaxt="n",
+       yaxt="n",
+       bty="n")
 )
+axis(2,at=10*(0:6),tck=1,col="white",lwd=1,labels=FALSE)
+axis(2,at=10*(0:6),las=2)
+axis(1,at=10*(0:6), tck=1,col="white",lwd=1,labels=FALSE)
+axis(1,at=10*(0:6))
+abline(a=0,b=1,col="red",lwd=2)
 
 with(cabi,
      plot(
