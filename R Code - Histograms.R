@@ -125,3 +125,14 @@ with(cabi,
        abline(a=0,b=1)
      )
 )
+
+
+
+# Statistics!
+
+library("pastecs")
+library("xtable")
+options(scipen=100)
+options(digits=2)
+speeds <- cbind(cabi$PlannedBike_mph, cabi$CaBi_mph)
+stat.desc(speeds, basic=F)
